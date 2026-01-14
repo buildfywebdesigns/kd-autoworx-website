@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>KD Autoworx</title>
+
+<style>
+:root{
+ --red:#b11212;
+ --grey:#9e9e9e;
+
+ --bg-light:
+  radial-gradient(circle at 20% 20%, rgba(177,18,18,.45), transparent 40%),
+  radial-gradient(circle at 80% 30%, rgba(177,18,18,.35), transparent 45%),
+  linear-gradient(135deg, #f2f2f2 0%, #cfcfcf 40%, #9e9e9e 100%);
+
+ --bg-dark:
+  radial-gradient(circle at 20% 20%, rgba(177,18,18,.55), transparent 40%),
+  radial-gradient(circle at 80% 30%, rgba(177,18,18,.45), transparent 45%),
+  linear-gradient(135deg, #121212 0%, #1e1e1e 40%, #2a2a2a 100%);
+}
+
+*{box-sizing:border-box;margin:0;padding:0;font-family:"Segoe UI",sans-serif;}
+
+body{
+ background:var(--bg-light);
+ color:#111;
+ overflow:auto;
+ min-height:100vh;
+ transition:.4s;
+}
+
+body.dark{
+ background:var(--bg-dark);
+ color:#eee;
+}
+
+canvas{
+ position:fixed;
+ inset:0;
+ z-index:0;
+ pointer-events:none;
+}
+
+header{
+ position:relative;
+ z-index:2;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ padding:24px 48px;
+}
+
+.logo{
+ display:flex;
+ align-items:center;
+ gap:14px;
+}
+
+.shield{
+ width:64px;
+ height:72px;
+ background:linear-gradient(145deg,#b11212,#7d0c0c);
+ border-radius:12px 12px 24px 24px;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ box-shadow:0 0 14px rgba(177,18,18,.6);
+}
+
+.shield span{
+ font-size:26px;
+ font-weight:800;
+ color:#b11212;
+ -webkit-text-stroke:2px #000;
+ text-shadow:0 0 6px rgba(177,18,18,.8);
+}
+
+.brand{
+ font-size:28px;
+ font-weight:800;
+ color:var(--red);
+ text-transform:uppercase;
+ -webkit-text-stroke:1px #000;
+ text-shadow:0 0 6px rgba(177,18,18,.6);
+}
+
+nav{
+ display:flex;
+ gap:26px;
+}
+
+nav a{
+ color:inherit;
+ text-decoration:none;
+ font-weight:600;
+ position:relative;
+}
+
+nav a::after{
+ content:"";
+ position:absolute;
+ left:0;
+ bottom:-6px;
+ width:0;
+ height:2px;
+ background:var(--red);
+ transition:.3s;
+}
+
+nav a:hover::after{width:100%;}
+
+.toggle{
+ cursor:pointer;
+ font-size:18px;
+ background:transparent;
+ border:0;
+ padding:6px 10px;
+ border-radius:8px;
+}
+
+.toggle:focus{outline:2px solid rgba(177,18,18,.25);}
+
+.hero{
+ position:relative;
+ z-index:2;
+ height:calc(100vh - 110px);
+ display:flex;
+ flex-direction:column;
+ justify-content:center;
+ align-items:center;
+ text-align:center;
+ padding:0 24px;
+}
+
+.hero h1{
+ font-size:46px;
+ margin-bottom:14px;
+}
+
+.hero p{
+ font-size:20px;
+ max-width:720px;
+ margin-bottom:28px;
+ color:#333;
+}
+
+body.dark .hero p{color:#ccc;}
+
+.whatsapp{
+ display:inline-block;
+ padding:14px 28px;
+ background:#25d366;
+ color:#fff;
+ border-radius:30px;
+ text-decoration:none;
+ font-weight:700;
+ box-shadow:0 0 16px rgba(37,211,102,.6);
+}
+
+/* Services */
+.services{
+ position:relative;
+ z-index:2;
+ padding:48px 24px;
+ max-width:1100px;
+ margin:0 auto;
+}
+
+.services h2{
+ font-size:28px;
+ margin-bottom:8px;
+ color:var(--red);
+}
+
+.services p.lead{
+ color:#333;
+ margin-bottom:22px;
+ max-width:820px;
+}
+
+/* cards */
+.cards{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:18px;
+}
+
+.card{
+ background:rgba(255,255,255,0.92);
+ border-radius:12px;
+ padding:12px;
+ box-shadow:0 10px 30px rgba(0,0,0,.06);
+ display:flex;
+ flex-direction:column;
+ gap:8px;
+ cursor:pointer;
+ align-items:flex-start;
+}
+
+.card .media{
+ width:100%;
+ height:200px;
+ border-radius:8px;
+ overflow:hidden;
+ background:#f3f3f3;
+}
+
+.card img{
+ width:100%;
+ height:100%;
+ object-fit:cover;
+ display:block;
+}
+
+.card h3{margin:0;font-size:18px;}
+/* removed short description text under titles as requested */
+
+@media (max-width:980px){
+ .cards{grid-template-columns:repeat(2,1fr);}
+}
+@media (max-width:640px){
+ .cards{grid-template-columns:1fr;}
+ header{padding:16px;}
+ .hero h1{font-size:34px;}
+ .hero{height:auto;padding:36px 12px;}
+}
+
+/* Quote form */
+#quote{
+ position:relative;
+ z-index:2;
+ padding:40px 24px;
+ max-width:900px;
+ margin:0 auto 60px;
+}
+
+#quote h2{color:var(--red);margin-bottom:8px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;}
+.form-grid .full{grid-column:1/-1;}
+input,select,textarea{
+ width:100%;
+ padding:10px;
+ border-radius:8px;
+ border:1px solid #ddd;
+ font-size:15px;
+}
+textarea{min-height:120px;resize:vertical}
+
+.btn-submit{
+ margin-top:12px;
+ padding:12px 18px;
+ border-radius:10px;
+ background:var(--red);
+ color:#fff;
+ border:0;
+ cursor:pointer;
+ font-weight:700;
+}
+
+/* footer */
+footer{
+ position:relative;
+ z-index:2;
+ text-align:center;
+ padding:18px;
+ opacity:.8;
+}
+
+/* small utility */
+.small{font-size:13px;color:var(--grey);}
+
+/* focus */
+:focus{outline:2px solid rgba(177,18,18,.25);outline-offset:2px}
+</style>
+</head>
+
+<body>
+<canvas id="sparks"></canvas>
+
+<header>
+ <div class="logo">
+  <div class="shield"><span>KD</span></div>
+  <div class="brand">AUTOWORX</div>
+ </div>
+
+ <nav>
+  <a href="#home">Home</a>
+  <a href="#services">Services</a>
+  <a href="#quote">Get a Quote</a>
+  <a href="#contact">Contact</a>
+ </nav>
+
+ <button class="toggle" onclick="toggleTheme()" id="themeBtn" aria-pressed="false" aria-label="Toggle theme">🌙</button>
+</header>
+
+<section id="home" class="hero">
+ <h1>Specialists In Autobody & Auto Repair — BMW & VW South Africa</h1>
+ <p>Reliable Car Maintenance & Repair Solutions for BMW and Volkswagen vehicles across South Africa.</p>
+ <a class="whatsapp" href="https://wa.me/27678808027" target="_blank" rel="noopener noreferrer">WhatsApp Us</a>
+</section>
+
+<!-- Services: responsive WebP + JPEG variants -->
+<section id="services" class="services" aria-labelledby="services-title">
+ <h2 id="services-title">Our Services</h2>
+ <p class="lead">We specialise in BMW and Volkswagen (VW) vehicles. Click a card to request a tailored quote.</p>
+
+ <div class="cards" role="list">
+  <!-- Card 1: collision / bodywork -->
+  <article class="card" id="svc-collision" role="listitem" tabindex="0" aria-label="Collision Repair and Paint Matching">
+    <div class="media">
+      <picture>
+        <source type="image/webp"
+          srcset="assets/service-collision-400.webp 400w, assets/service-collision-800.webp 800w, assets/service-collision-1200.webp 1200w"
+          sizes="(max-width:640px) 100vw, (max-width:1100px) 50vw, 33vw">
+        <img src="assets/service-collision-800.jpg"
+             srcset="assets/service-collision-400.jpg 400w, assets/service-collision-800.jpg 800w, assets/service-collision-1200.jpg 1200w"
+             sizes="(max-width:640px) 100vw, (max-width:1100px) 50vw, 33vw"
+             loading="lazy"
+             alt="Technician grinding damaged front panel producing sparks — collision repair">
+      </picture>
+    </div>
+    <h3>Collision Repair & Paint Matching</h3>
+  </article>
+
+  <!-- Card 2: VW panel / rear -->
+  <article class="card" id="svc-vw" role="listitem" tabindex="0" aria-label="Volkswagen Diagnostics and Body Repair">
+    <div class="media">
+      <picture>
+        <source type="image/webp"
+          srcset="assets/service-vw-400.webp 400w, assets/service-vw-800.webp 800w, assets/service-vw-1200.webp 1200w"
+          sizes="(max-width:640px) 100vw, (max-width:1100px) 50vw, 33vw">
+        <img src="assets/service-vw-800.jpg"
+             srcset="assets/service-vw-400.jpg 400w, assets/service-vw-800.jpg 800w, assets/service-vw-1200.jpg 1200w"
+             sizes="(max-width:640px) 100vw, (max-width:1100px) 50vw, 33vw"
+             loading="lazy"
+             alt="Technician working on Volkswagen rear quarter panel — body repair">
+      </picture>
+    </div>
+    <h3>Volkswagen Diagnostics & Repair</h3>
+  </article>
+
+  <!-- Card 3: BMW mechanical / panel -->
+  <article class="card" id="svc-bmw" role="listitem" tabindex="0" aria-label="BMW Mechanical and Panel Service">
+    <div class="media">
+      <picture>
+        <source type="image/webp"
+          srcset="assets/service-bmw-400.webp 400w, assets/service-bmw-800.webp 800w, assets/service-bmw-1200.webp 1200w"
+          sizes="(max-width:640px) 100vw, (max-width:1100px) 50vw, 33vw">
+        <img src="assets/service-bmw-800.jpg"
+             srcset="assets/service-bmw-400.jpg 400w, assets/service-bmw-800.jpg 800w, assets/service-bmw-1200.jpg 1200w"
+             sizes="(max-width:640px) 100vw, (max-width:1100px) 50vw, 33vw"
+             loading="lazy"
+             alt="Technician repairing front wheel arch and panels on a BMW">
+      </picture>
+    </div>
+    <h3>BMW Mechanical Service</h3>
+  </article>
+ </div>
+</section>
+
+<!-- Get a Quote form -->
+<section id="quote" aria-labelledby="quote-title">
+ <h2 id="quote-title">Get a Quote</h2>
+ <p class="small">Tell us about your BMW or Volkswagen. We’ll respond via email or WhatsApp with an estimated quote.</p>
+
+ <form id="quoteForm" novalidate>
+  <div class="form-grid">
+    <input type="text" id="name" name="name" placeholder="Full name" required aria-label="Full name">
+    <input type="email" id="email" name="email" placeholder="Email" required aria-label="Email">
+    <input type="tel" id="phone" name="phone" placeholder="Phone (WhatsApp number preferred)" aria-label="Phone">
+    <select id="make" name="make" required aria-label="Vehicle make">
+      <option value="">Select make</option>
+      <option>BMW</option>
+      <option>Volkswagen (VW)</option>
+      <option>Toyota</option>
+      <option>Mercedes-Benz</option>
+      <option>Ford</option>
+      <option>Other</option>
+    </select>
+
+    <input type="text" id="model" name="model" placeholder="Model (e.g. 320i / Polo)" aria-label="Model">
+    <input type="number" id="year" name="year" placeholder="Year (e.g. 2018)" min="1900" max="2099" aria-label="Year">
+
+    <textarea id="details" name="details" class="full" placeholder="Briefly describe the issue or service required (include VIN or registration if available)"></textarea>
+  </div>
+
+  <div style="margin-top:12px">
+    <button type="submit" class="btn-submit">Request Quote</button>
+    <span class="small" style="margin-left:12px">We'll reply within one business day. Or message us on WhatsApp.</span>
+  </div>
+ </form>
+</section>
+
+<!-- Contact / Footer -->
+<section id="contact" style="padding:24px 24px;max-width:1100px;margin:0 auto;">
+ <h3>Contact & Location</h3>
+ <p class="small">Phone/WhatsApp: <a href="https://wa.me/27678808027" target="_blank" rel="noopener noreferrer">+27 67 880 8027</a></p>
+ <p class="small">Address: 123 Workshop Road, Your City — Mon–Fri 08:00–17:00</p>
+</section>
+
+<footer>
+ © KD Autoworx – Buildify Web Designers
+</footer>
+
+<script>
+/* Canvas sparks animation (preserves original behavior) */
+const canvas=document.getElementById("sparks");
+const ctx=canvas.getContext("2d");
+let w,h;
+function resize(){w=canvas.width=window.innerWidth;h=canvas.height=window.innerHeight;}
+window.onresize=resize;resize();
+
+let sparks=[];
+for(let i=0;i<80;i++){
+ sparks.push({x:Math.random()*w,y:Math.random()*h,v:Math.random()*1+0.5});
+}
+
+function draw(){
+ ctx.clearRect(0,0,w,h);
+ ctx.fillStyle="rgba(255,120,0,.9)";
+ sparks.forEach(s=>{
+  ctx.beginPath();
+  ctx.arc(s.x,s.y,2,0,Math.PI*2);
+  ctx.fill();
+  s.y-=s.v;
+  if(s.y<0){s.y=h;s.x=Math.random()*w;}
+ });
+ requestAnimationFrame(draw);
+}
+draw();
+
+/* Theme toggle */
+function toggleTheme(){
+ document.body.classList.toggle("dark");
+ const btn = document.getElementById('themeBtn');
+ const pressed = document.body.classList.contains('dark');
+ btn.setAttribute('aria-pressed', pressed ? 'true' : 'false');
+ btn.textContent = pressed ? '☀️' : '🌙';
+}
+
+/* Quote form: mailto fallback (no backend) */
+(function(){
+ const form = document.getElementById('quoteForm');
+ const FORM_ACTION = ""; // set to server endpoint if available
+ form.addEventListener('submit', function(e){
+   e.preventDefault();
+   const data = {
+     name: form.name.value.trim(),
+     email: form.email.value.trim(),
+     phone: form.phone.value.trim(),
+     make: form.make.value,
+     model: form.model.value.trim(),
+     year: form.year.value,
+     details: form.details.value.trim()
+   };
+   if (FORM_ACTION) {
+     fetch(FORM_ACTION, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
+       .then(r => { if (r.ok) { alert('Quote request sent — we will contact you shortly.'); form.reset(); } else { throw new Error('Send failed'); } })
+       .catch(() => { alert('Could not send via server. Opening email client as fallback.'); mailtoFallback(data); });
+   } else {
+     mailtoFallback(data);
+   }
+ });
+
+ function mailtoFallback(d){
+   const to = 'info@kdautoworx.example';
+   const subject = encodeURIComponent('Quote request from website: ' + (d.name || 'visitor'));
+   const body = encodeURIComponent(
+     'Name: ' + d.name + '\n' +
+     'Email: ' + d.email + '\n' +
+     'Phone: ' + d.phone + '\n' +
+     'Make: ' + d.make + '\n' +
+     'Model: ' + d.model + '\n' +
+     'Year: ' + d.year + '\n\n' +
+     'Details:\n' + d.details
+   );
+   window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
+ }
+})();
+
+/* Service card clicks: prefill make and scroll */
+document.getElementById('svc-collision').addEventListener('click', ()=>{ document.getElementById('make').value='BMW'; document.getElementById('quote').scrollIntoView({behavior:'smooth'}); });
+document.getElementById('svc-bmw').addEventListener('click', ()=>{ document.getElementById('make').value='BMW'; document.getElementById('quote').scrollIntoView({behavior:'smooth'}); });
+document.getElementById('svc-vw').addEventListener('click', ()=>{ document.getElementById('make').value='Volkswagen (VW)'; document.getElementById('quote').scrollIntoView({behavior:'smooth'}); });
+
+['svc-collision','svc-vw','svc-bmw'].forEach(id=>{
+  const el = document.getElementById(id);
+  el.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' ') el.click(); });
+});
+</script>
+</body>
+</html>
